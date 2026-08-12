@@ -1,0 +1,29 @@
+stages:
+  data_ingestion:
+    cmd: 'python src\data_ingestion.py'
+    deps: 
+    - src\data_ingestion.py
+    outs:
+    - data\raw
+  data_preprocessing:
+    cmd: 'python src\data_preprocessing.py'
+    deps: 
+    - data\raw
+    - src\data_preprocessing.py
+    outs:
+    - data\interim
+  model_build.py:
+    cmd: 'python src\model_build.py'
+    deps: 
+    - src\model_build.py
+    - data\interim
+    outs:
+    - models\model.pkl
+  model_eval.py:
+    cmd: 'python src\model_eval.py'
+    deps: 
+    - src\model_eval.py
+    - models\model.pkl
+    outs:
+    - reports\metrics.json
+
