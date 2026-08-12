@@ -1,4 +1,6 @@
 [core]
-    remote = myremote
+    remote = dvcstore
 ['remote "myremote"']
     url = ../S3
+['remote "dvcstore"']
+    url = s3://devanshur-mlops-s3proj
