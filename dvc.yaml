@@ -10,6 +10,8 @@ stages:
     deps: 
     - data\raw
     - src\data_preprocessing.py
+    params:
+    - data_preprocessing.test_size
     outs:
     - data\interim
   model_build.py:

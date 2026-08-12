@@ -4,6 +4,7 @@ import logging
 import os
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
+import yaml
 
 encoder=OneHotEncoder(sparse_output=False,handle_unknown='ignore')
 
@@ -27,6 +28,22 @@ fil_log.setFormatter(formatter)
 logger.addHandler(console_logger)
 logger.addHandler(fil_log)
 
+def load_params(par_path):
+    try:
+        with open(par_path,'r') as file:
+            params=yaml.safe_load(file)
+        return params
+        logger.debug('Parameters loaded successfully.')
+    except FileNotFoundError:
+        logger.error('File not found')
+        raise
+    except yaml.YAMLError as e:
+        logger.error('Unable to load yaml.')
+        raise
+    except Exception as e:
+        logger.error('Unexpected error occured during loading of parameters.')
+        raise
+
 def transform(df,categorical_cols):
     try:
         logger.debug('Transformation started.')
@@ -46,7 +63,10 @@ def main():
         raw_df=pd.read_csv(r'C:\Users\devan\OneDrive\Desktop\End-to-End-Pipeline\data\raw\raw_data')
         categorical_cols=['brand','fuel','owner']
         df=transform(raw_df,categorical_cols)
-        train_data, test_data = train_test_split(df,test_size=0.2,random_state=42)
+        params=load_params(par_path='params.yaml')
+        test_size=params['data_preprocessing']['test_size']
+        print(test_size)
+        train_data, test_data = train_test_split(df,test_size=test_size,random_state=42)
         data_path=os.path.join('./data','interim')
         os.makedirs(data_path,exist_ok=True)
         train_data.to_csv(os.path.join(data_path,'train_data.csv'))
